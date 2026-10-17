@@ -10,8 +10,7 @@ from pipeline import TARGET, clean, load_data
 
 
 st.set_page_config(
-    page_title="Student Performance | Insight",
-    page_icon="🎓",
+    page_title="Student Performance Dashboard",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -19,72 +18,93 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    :root { --ink:#15243b; --muted:#718096; --blue:#365cf5; --line:#e8edf5; }
-    html, body, [class*="css"] { font-family:'DM Sans', sans-serif; }
-    [data-testid="stAppViewContainer"] { background:#f5f7fb; }
+    :root { --ink:#172b45; --muted:#6b7a8d; --accent:#27627a; --line:#e2e8f0; }
+    html, body, [class*="css"] { font-family:'Segoe UI', Arial, sans-serif; }
+    [data-testid="stAppViewContainer"] { background:#f4f7fb; }
     [data-testid="stHeader"] { background:transparent; }
-    [data-testid="stSidebar"] { background:#101b31; }
-    [data-testid="stSidebar"] * { color:#e8eefb; }
-    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p { color:#b9c5dc; }
-    [data-testid="stSidebar"] input { background:#fff !important; color:#15243b !important; }
-    .block-container { max-width:1440px; padding-top:2rem; padding-bottom:3rem; }
-    h1,h2,h3 { font-family:'Manrope',sans-serif; color:var(--ink); letter-spacing:-.035em; }
+    [data-testid="stSidebar"] { background:#13243b; border-right:1px solid #213851; }
+    [data-testid="stSidebar"] * { color:#edf2f8; }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p { color:#b9c6d6 !important; }
+    [data-testid="stSidebar"] input { background:#fff !important; color:#203247 !important; }
+    .block-container { max-width:1400px; padding-top:1.7rem; padding-bottom:2.5rem; }
+    h1,h2,h3 { font-family:'Segoe UI', Arial, sans-serif; color:var(--ink); letter-spacing:-.02em; }
+    h1 { font-size:2rem; }
+    h2 { font-size:1.45rem; }
     [data-testid="stMarkdownContainer"] h1,
     [data-testid="stMarkdownContainer"] h2,
     [data-testid="stMarkdownContainer"] h3 { color:var(--ink) !important; }
     [data-testid="stMarkdownContainer"] p,
     [data-testid="stWidgetLabel"] p,
-    [data-testid="stCaptionContainer"] { color:#526176 !important; }
+    [data-testid="stCaptionContainer"] { color:#4f6072 !important; }
     [data-testid="stMarkdownContainer"] li,
     [data-testid="stMarkdownContainer"] li p,
-    [data-testid="stMarkdownContainer"] strong { color:#334155 !important; }
-    [data-testid="stTabs"] button { color:#526176 !important; }
-    [data-testid="stTabs"] button[aria-selected="true"] { color:#365cf5 !important; }
-    [data-testid="stForm"] label, [data-testid="stForm"] label p { color:#27364d !important; }
-    [data-testid="stForm"] [data-testid="stMarkdownContainer"] p { color:#526176 !important; }
+    [data-testid="stMarkdownContainer"] strong { color:#26384d !important; }
+    [data-testid="stTabs"] button { color:#536579 !important; }
+    [data-testid="stTabs"] button[aria-selected="true"] { color:var(--accent) !important; }
+    [data-testid="stForm"] label, [data-testid="stForm"] label p { color:#27394d !important; }
+    [data-testid="stForm"] [data-testid="stMarkdownContainer"] p { color:#43566a !important; }
     [data-testid="stFormSubmitButton"] button,
-    div.stButton > button { background:#365cf5 !important; color:#fff !important; }
-    .hero { background:linear-gradient(115deg,#142342 0%,#253e77 58%,#365cf5 100%); border-radius:22px;
-        padding:30px 34px; color:white; margin:4px 0 24px; box-shadow:0 14px 32px rgba(25,48,99,.15); }
-    .hero h1 { color:white !important; font-size:2rem; margin:4px 0 7px; }
-    .hero p { color:#d9e2fb !important; margin:0; font-size:1rem; }
-    .eyebrow { text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; font-weight:700; color:#a9beff; }
-    .section-label { color:#596a83; text-transform:uppercase; letter-spacing:.12em; font-size:.72rem; font-weight:700; }
-    [data-testid="stMetric"] { background:white; border:1px solid var(--line); border-radius:16px; padding:18px 20px; box-shadow:0 4px 15px rgba(29,51,88,.035); }
-    [data-testid="stMetricLabel"] { color:#718096; }
-    [data-testid="stMetricValue"] { color:var(--ink); font-family:'Manrope',sans-serif; font-size:1.25rem !important; }
+    div.stButton > button { background:var(--accent) !important; color:#fff !important; border:1px solid var(--accent) !important; }
+    [data-testid="stFormSubmitButton"] button *,
+    div.stButton > button * { color:#fff !important; }
+    [data-testid="stForm"] [data-testid="stFormSubmitButton"] button [data-testid="stMarkdownContainer"] p,
+    [data-testid="stForm"] [data-testid="stFormSubmitButton"] button span { color:#fff !important; font-weight:700 !important; }
+    [data-testid="stForm"] [data-testid="stWidgetLabel"] p,
+    [data-testid="stForm"] label p { color:#172b45 !important; font-weight:600; }
+    [data-testid="stForm"] [data-testid="stCaptionContainer"] { color:#42546a !important; }
+    .page-header { background:#183650; border-left:5px solid #4d9295; border-radius:10px;
+        padding:24px 28px; margin:2px 0 22px; box-shadow:0 5px 14px rgba(25,48,72,.08); }
+    .page-header h1 { color:#fff !important; font-size:2rem; margin:5px 0 7px; }
+    .page-header p { color:#e0e9f1 !important; margin:0; font-size:1rem; }
+    .eyebrow { text-transform:uppercase; letter-spacing:.11em; font-size:.7rem; font-weight:700; color:#a9d1d2; }
+    .section-label { color:#53677c; text-transform:uppercase; letter-spacing:.09em; font-size:.7rem; font-weight:700; }
+    [data-testid="stMetric"] { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; box-shadow:0 3px 12px rgba(24,46,74,.035); }
+    [data-testid="stMetricLabel"] { color:#617184; }
+    [data-testid="stMetricValue"] { color:var(--ink); font-family:'Segoe UI', Arial, sans-serif; font-size:1.5rem !important; }
     div[data-testid="stTabs"] button { font-weight:600; }
-    div[data-testid="stForm"] { background:white; padding:22px 24px 18px; border:1px solid var(--line); border-radius:18px; }
-    div.stButton > button, div[data-testid="stFormSubmitButton"] > button { border-radius:10px; border:0; background:#365cf5; color:white; font-weight:700; padding:.65rem 1.2rem; }
-    div.stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover { background:#2549dd !important; color:white !important; }
-    .result-card { background:white; border:1px solid var(--line); border-radius:18px; padding:24px; box-shadow:0 4px 15px rgba(29,51,88,.035); }
-    .small-note { color:#718096; font-size:.86rem; }
+    div[data-testid="stForm"] { background:#fff; padding:22px 24px 18px; border:1px solid var(--line); border-radius:12px; }
+    div.stButton > button, div[data-testid="stFormSubmitButton"] > button { border-radius:8px; font-weight:600; padding:.62rem 1rem; }
+    div.stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover { background:#1c4d61 !important; border-color:#1c4d61 !important; color:#fff !important; }
+    .small-note { color:var(--muted); font-size:.9rem; }
     footer { visibility:hidden; }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-st.sidebar.markdown("<div style='font-size:1.45rem;font-weight:800;font-family:Manrope'>✦ Student Insight</div>", unsafe_allow_html=True)
-st.sidebar.markdown("<p style='margin-top:3px'>Performance analytics workspace</p>", unsafe_allow_html=True)
+st.sidebar.markdown("<div style='font-size:1.25rem;font-weight:700'>Student Performance</div>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='margin-top:3px'>Prediction and analysis</p>", unsafe_allow_html=True)
 st.sidebar.divider()
-st.sidebar.markdown("<div class='section-label'>Workspace</div>", unsafe_allow_html=True)
+st.sidebar.markdown("<div class='section-label'>Data source</div>", unsafe_allow_html=True)
 data_path = st.sidebar.text_input("Dataset file", "data/student-mat.csv", help="CSV file from the UCI Student Performance dataset")
 st.sidebar.caption("The selected data file is used to populate insights and prediction defaults.")
 
 model_path = "models/best_model.joblib"
 if not os.path.isfile(data_path):
-    st.markdown("<div class='hero'><div class='eyebrow'>Student analytics</div><h1>Welcome to Student Insight</h1><p>Explore academic patterns and estimate final grades from student progress.</p></div>", unsafe_allow_html=True)
+    st.markdown("<div class='page-header'><div class='eyebrow'>Academic analytics</div><h1>Student Performance Prediction System</h1><p>Identify students who may need support using study time, attendance, and previous grades.</p></div>", unsafe_allow_html=True)
     st.error(f"Dataset file not found: `{data_path}`")
     st.info("Use `data/student-mat.csv` or enter `data/student-por.csv` in the sidebar.")
     st.stop()
 
-df = clean(load_data(data_path))
+raw_df = load_data(data_path)
+if TARGET not in raw_df.columns:
+    st.error(f"The selected CSV must include a `{TARGET}` final-grade column.")
+    st.stop()
+raw_rows = len(raw_df)
+duplicate_rows = int(raw_df.duplicated().sum())
+df = clean(raw_df)
+if TARGET not in df.columns:
+    st.error(f"The selected CSV must include a `{TARGET}` final-grade column.")
+    st.stop()
+missing_target_rows = int(raw_df[TARGET].isna().sum()) if TARGET in raw_df.columns else 0
+remaining_feature_missing = int(df.drop(columns=[TARGET]).isna().sum().sum())
+numeric_feature_count = len(df.drop(columns=[TARGET]).select_dtypes(include="number").columns)
+categorical_feature_count = len(df.drop(columns=[TARGET]).select_dtypes(exclude="number").columns)
 
 st.markdown(
-    "<div class='hero'><div class='eyebrow'>Student analytics · Overview</div>"
-    "<h1>Understand performance. Plan support.</h1>"
-    "<p>Explore the dataset, compare model quality, and estimate a student's final grade.</p></div>",
+    "<div class='page-header'><div class='eyebrow'>Academic analytics</div>"
+    "<h1>Student Performance Prediction System</h1>"
+    "<p>Estimate a student's final grade from study time, attendance, and previous grades, then review the model and dataset.</p></div>",
     unsafe_allow_html=True,
 )
 
@@ -93,50 +113,44 @@ if not os.path.isfile(model_path):
     st.stop()
 
 bundle = joblib.load(model_path)
-if TARGET not in df.columns:
-    st.error(f"The selected CSV must include a `{TARGET}` final-grade column.")
-    st.stop()
 
 avg_grade = float(df[TARGET].mean())
 pass_rate = float((df[TARGET] >= 10).mean() * 100)
-top_grade = float((df[TARGET] >= 16).mean() * 100)
 
 k1, k2, k3, k4 = st.columns(4)
-k1.metric("Students in dataset", f"{len(df):,}", help="Rows remaining after duplicate and missing-target cleanup")
+k1.metric("Student records", f"{len(df):,}", help="Rows remaining after duplicate and missing-target cleanup")
 k2.metric("Average final grade", f"{avg_grade:.1f} / 20")
-k3.metric("At or above 10 / 20", f"{pass_rate:.0f}%")
+k3.metric("Pass rate (G3 ≥ 10)", f"{pass_rate:.0f}%")
 k4.metric("Best model", bundle["best"], help=f"Full model name: {bundle['best']}")
 
-st.write("")
-predict_tab, insights_tab, models_tab = st.tabs(["✦  Grade prediction", "▥  Dataset insights", "⌁  Model performance"])
+st.sidebar.markdown("<div class='section-label'>Project sections</div>", unsafe_allow_html=True)
+selected_section = st.sidebar.radio(
+    "Project sections",
+    ["Overview", "Dataset analysis", "Model comparison"],
+    label_visibility="collapsed",
+    help="Overview opens the student grade prediction form.",
+)
 
-with predict_tab:
+if selected_section == "Overview":
     left, right = st.columns([1.35, .85], gap="large")
     with left:
         st.subheader("Student profile")
-        st.markdown("<p class='small-note'>Choose the profile this estimate is for. The dataset has anonymous records, so you can add your own label or ID.</p>", unsafe_allow_html=True)
+        st.markdown("<p class='small-note'>Enter the student's name or ID, then adjust the academic details to estimate a final grade.</p>", unsafe_allow_html=True)
         with st.form("prediction_form"):
-            profile_mode = st.radio("Profile starting point", ["New student (typical dataset profile)", "Existing anonymous dataset record"], horizontal=True)
-            record_number = None
-            if profile_mode == "Existing anonymous dataset record":
-                record_number = st.selectbox("Choose a dataset student record", range(1, len(df) + 1), format_func=lambda n: f"Student record #{n:03d}")
-                base_row = df.iloc[record_number - 1].to_dict()
-                default_label = f"Student record #{record_number:03d}"
-            else:
-                base_row = dict(bundle["defaults"])
-                for col in bundle["cats"]:
-                    if col in df.columns and not df[col].dropna().empty:
-                        base_row[col] = df[col].mode().iloc[0]
-                default_label = "New student"
-            student_label = st.text_input("Student name, initials, or ID (optional)", value=default_label, help="This label is only used to identify the result on this screen.")
+            base_row = dict(bundle["defaults"])
+            for col in bundle["cats"]:
+                if col in df.columns and not df[col].dropna().empty:
+                    base_row[col] = df[col].mode().iloc[0]
+            student_label = st.text_input("Student name, initials, or ID (optional)", value="New student", help="This label is only used to identify the result on this screen.")
             st.markdown("**Academic progress and attendance**")
-            a, b, c = st.columns(3)
-            studytime_default = int(np.clip(base_row.get("studytime", 2), 1, 4))
+            a, b, c = st.columns([1.15, 1, 1.15], gap="medium")
+            studytime_band_default = int(np.clip(base_row.get("studytime", 2), 1, 4))
+            studytime_hours_default = {1: 1, 2: 3, 3: 6, 4: 8}[studytime_band_default]
             absences_default = int(np.clip(base_row.get("absences", 4), 0, 75))
             failures_default = int(np.clip(base_row.get("failures", 0), 0, 3))
             g1_default = int(np.clip(base_row.get("G1", 10), 0, 20))
             g2_default = int(np.clip(base_row.get("G2", 10), 0, 20))
-            studytime = a.select_slider("Weekly study time", options=[1, 2, 3, 4], value=studytime_default, format_func=lambda x: {1:"< 2 hours", 2:"2–5 hours", 3:"5–10 hours", 4:"> 10 hours"}[x])
+            studytime_hours = a.slider("Study time (0–8 hours/week)", min_value=0, max_value=8, value=studytime_hours_default, step=1)
             absences = b.number_input("Absences", min_value=0, max_value=75, value=absences_default, step=1)
             failures = c.selectbox("Past class failures", options=[0, 1, 2, 3], index=failures_default)
             d, e = st.columns(2)
@@ -146,15 +160,16 @@ with predict_tab:
 
         if submitted:
             row = dict(base_row)
+            # UCI encodes studytime in four bands. The requested 0–8 hour input
+            # is mapped to the matching first three bands before prediction.
+            studytime = 1 if studytime_hours < 2 else 2 if studytime_hours < 5 else 3
             row.update(studytime=studytime, absences=absences, failures=failures, G1=g1, G2=g2)
             try:
                 prediction = float(np.clip(bundle["pipeline"].predict(pd.DataFrame([row])[bundle["features"]])[0], 0, 20))
                 st.session_state["last_prediction"] = {
                     "grade": prediction,
-                    "label": student_label.strip() or (f"Student record #{record_number:03d}" if record_number else "New student"),
-                    "record_number": record_number,
-                    "profile_mode": profile_mode,
-                    "studytime": studytime,
+                    "label": student_label.strip() or "New student",
+                    "studytime_hours": studytime_hours,
                     "absences": absences,
                     "failures": failures,
                     "G1": g1,
@@ -181,46 +196,65 @@ with predict_tab:
                     st.success("Positive estimate. Encourage the student to maintain their progress.")
                 st.caption("This is a model estimate, not an official grade.")
             st.markdown("**Inputs used**")
-            studytime_text = {1: "< 2 hours", 2: "2–5 hours", 3: "5–10 hours", 4: "> 10 hours"}[result["studytime"]]
             st.markdown(
-                f"- Weekly study time: **{studytime_text}**  \n"
+                f"- Study time per week: **{result['studytime_hours']} hours**  \n"
                 f"- Absences: **{result['absences']}** · Past failures: **{result['failures']}**  \n"
                 f"- Previous grades: **G1 {result['G1']} / 20**, **G2 {result['G2']} / 20**"
             )
-            if result["record_number"] is None:
-                st.caption("New student profile: unedited fields use typical dataset values (numeric medians and most common categories).")
-            else:
-                st.caption(f"Based on anonymous dataset record #{result['record_number']:03d}; its G3 grade is not used as an input. Other profile fields come from that record.")
+            st.caption("Unedited fields use typical dataset values (numeric medians and most common categories).")
         else:
             st.info("Complete the profile and submit it. The estimate will be shown here with the exact student label and inputs.")
-            st.markdown("<div class='result-card'><div class='section-label'>How the estimate is made</div><p class='small-note'>The model predicts the final grade (G3, on a 0–20 scale) from previous grades, study time, absences, past failures, and other profile fields. Existing dataset records are anonymous.</p></div>", unsafe_allow_html=True)
+            st.markdown("<div class='result-card'><div class='section-label'>How the estimate is made</div><p class='small-note'>The model predicts the final grade (G3, on a 0–20 scale) from previous grades, study time, absences, past failures, and other profile fields.</p></div>", unsafe_allow_html=True)
         st.caption(f"Current model: {bundle['best']}")
 
-with insights_tab:
-    st.subheader("Dataset insights")
-    st.markdown("<p class='small-note'>A quick view of grade outcomes and study patterns in the selected CSV.</p>", unsafe_allow_html=True)
+if selected_section == "Dataset analysis":
+    st.subheader("Dataset analysis")
+    st.markdown("<p class='small-note'>Review the cleaned student records, grade patterns, and preprocessing steps used for the regression models.</p>", unsafe_allow_html=True)
+    st.markdown("**Data preparation summary**")
+    prep1, prep2, prep3, prep4 = st.columns(4)
+    prep1.metric("Rows loaded", f"{raw_rows:,}")
+    prep2.metric("Duplicate rows removed", f"{duplicate_rows:,}")
+    prep3.metric("Rows missing final grade", f"{missing_target_rows:,}")
+    prep4.metric("Predictor fields", f"{numeric_feature_count + categorical_feature_count}")
+    st.caption(
+        f"Cleaned dataset: {len(df):,} rows · {numeric_feature_count} numeric fields · "
+        f"{categorical_feature_count} categorical fields · {remaining_feature_missing:,} predictor values need imputation."
+    )
+    with st.expander("Preprocessing used in model training"):
+        st.markdown(
+            "- Duplicate rows are removed; rows without a final grade (G3) are excluded.\n"
+            "- Missing numeric predictor values are filled with the training-set median, then standardized.\n"
+            "- Missing categorical predictor values are filled with the most common value, then one-hot encoded.\n"
+            "- Unseen categories are safely ignored during prediction."
+        )
     chart1, chart2 = st.columns(2, gap="large")
     with chart1:
         st.markdown("**Final grade distribution**")
-        st.bar_chart(df[TARGET].value_counts().sort_index(), color="#5573f7", height=300)
+        st.bar_chart(df[TARGET].value_counts().sort_index(), color="#27627a", height=300)
     with chart2:
         st.markdown("**Average grade by weekly study time**")
         study_summary = df.groupby("studytime")[TARGET].mean().rename("Average G3")
-        st.bar_chart(study_summary, color="#37a88b", height=300)
+        st.bar_chart(study_summary, color="#7da7a3", height=300)
     st.markdown("**Student records**")
     st.dataframe(df.head(50), use_container_width=True, hide_index=True)
     st.caption(f"Showing up to 50 of {len(df):,} cleaned rows.")
 
-with models_tab:
-    st.subheader("Model performance")
-    st.markdown("<p class='small-note'>Lower RMSE means predictions are closer to observed final grades. R² summarizes variance explained on the held-out split.</p>", unsafe_allow_html=True)
+if selected_section == "Model comparison":
+    st.subheader("Model comparison")
+    st.markdown("<p class='small-note'>RMSE measures average prediction error in grade points (lower is better). R² shows how much variation in final grades the model explains (closer to 1 is better).</p>", unsafe_allow_html=True)
     results_path = "outputs/model_comparison.csv"
     if os.path.isfile(results_path):
         results = pd.read_csv(results_path).sort_values("RMSE")
-        st.dataframe(results, use_container_width=True, hide_index=True)
-        if "RMSE" in results.columns:
-            st.markdown("**RMSE comparison**")
-            st.bar_chart(results.set_index("Model")[["RMSE"]], color="#5573f7", height=300)
+        best_row = results.iloc[0]
+        score1, score2, score3 = st.columns(3)
+        score1.metric("Selected model", str(best_row["Model"]))
+        score2.metric("Holdout RMSE", f"{best_row['RMSE']:.2f} grade points")
+        score3.metric("Holdout R²", f"{best_row['R2']:.3f}")
+        display_results = results.rename(columns={"R2": "R²", "CV_R2": "5-fold CV R²"})
+        st.markdown("**All trained regression models**")
+        st.dataframe(display_results, use_container_width=True, hide_index=True)
+        st.markdown("**RMSE by model**")
+        st.bar_chart(results.set_index("Model")[["RMSE"]], color="#27627a", height=300)
         if os.path.isfile("outputs/actual_vs_predicted.png"):
             st.image("outputs/actual_vs_predicted.png", caption="Actual and predicted grades on the holdout split", width=540)
     else:
@@ -231,4 +265,4 @@ with models_tab:
             if os.path.isfile("outputs/correlation_heatmap.png"):
                 st.image("outputs/correlation_heatmap.png", caption="Feature correlation heatmap", use_container_width=True)
 
-st.markdown("<div style='text-align:center;color:#8b98ad;font-size:.8rem;padding:28px 0 0'>STUDENT INSIGHT &nbsp;·&nbsp; A learning project for educational exploration</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align:center;color:#6b7a89;font-size:.8rem;padding:28px 0 0'>Student Performance Analysis · UCI Student Performance dataset</div>", unsafe_allow_html=True)
